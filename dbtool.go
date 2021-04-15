@@ -13,6 +13,7 @@ import (
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/docculi-company/awso/v3"
+	"github.com/docculi-company/gen"
 	"github.com/go-redis/redis"
 	"github.com/lithammer/shortuuid/v3"
 	"golang.org/x/crypto/bcrypt"
@@ -53,11 +54,11 @@ func Query(tx *sql.Tx, query string, params []interface{}, cols []string) ([]int
 					// check for map and decode
 					_, err := hex.DecodeString(s)
 					if err == nil {
-						m, err := DecodeStringToMSI(s)
+						m, err := gen.DecodeStringToMSI(s)
 						if err == nil {
 							rowMap[cols[i]] = m
 						} else {
-							a, err := DecodeStringToAr(s)
+							a, err := gen.DecodeStringToAr(s)
 							if err == nil {
 								rowMap[cols[i]] = a
 							}
@@ -171,11 +172,11 @@ func QueryWithFile(awso *awso.Awso, tx *sql.Tx, query string, params []interface
 					// check for map and decode
 					_, err := hex.DecodeString(s)
 					if err == nil {
-						m, err := DecodeStringToMSI(s)
+						m, err := gen.DecodeStringToMSI(s)
 						if err == nil {
 							rowMap[cols[i]] = m
 						} else {
-							a, err := DecodeStringToAr(s)
+							a, err := gen.DecodeStringToAr(s)
 							if err == nil {
 								rowMap[cols[i]] = a
 							}
@@ -341,68 +342,6 @@ func GetOriginDomain() string {
 
 //
 //
-// Encode map-string-interface to a byte string
-//
-//
-func EncodeMSIToString(m map[string]interface{}) (string, error) {
-	b, err := json.Marshal(m)
-	if err != nil {
-		return "", err
-	}
-
-	return hex.EncodeToString(b), nil
-}
-
-//
-//
-// Encode map-string-interface to a byte string
-//
-//
-func DecodeStringToMSI(s string) (map[string]interface{}, error) {
-	b, err := hex.DecodeString(s)
-
-	var m map[string]interface{}
-	err = json.Unmarshal(b, &m)
-	if err != nil {
-		return make(map[string]interface{}), err
-	}
-
-	return m, nil
-}
-
-//
-//
-// Encode map-string-interface to a byte string
-//
-//
-func EncodeArToString(a []interface{}) (string, error) {
-	b, err := json.Marshal(a)
-	if err != nil {
-		return "", err
-	}
-
-	return hex.EncodeToString(b), nil
-}
-
-//
-//
-// Encode map-string-interface to a byte string
-//
-//
-func DecodeStringToAr(s string) ([]interface{}, error) {
-	b, err := hex.DecodeString(s)
-
-	var a []interface{}
-	err = json.Unmarshal(b, &a)
-	if err != nil {
-		return make([]interface{}, 0, 8), err
-	}
-
-	return a, nil
-}
-
-//
-//
 // Check authentication
 //
 //
@@ -488,117 +427,6 @@ func UidsFromResult(res *[]interface{}, idType string) []string {
 		}
 	}
 	return uids
-}
-
-//
-//
-// ToStateAbbrev
-//
-//
-func ToStateAbbrev(s string) string {
-	switch tl := strings.ToLower(s); tl {
-	case "alabama":
-		return "AL"
-	case "alaska":
-		return "AK"
-	case "arkansas":
-		return "AR"
-	case "arizona":
-		return "AZ"
-	case "california":
-		return "CA"
-	case "colorado":
-		return "CO"
-	case "connecticuit":
-		return "CT"
-	case "delaware":
-		return "DE"
-	case "florida":
-		return "FL"
-	case "georgia":
-		return "GA"
-	case "hawaii":
-		return "HI"
-	case "iowa":
-		return "IA"
-	case "idaho":
-		return "ID"
-	case "illinois":
-		return "IL"
-	case "indiana":
-		return "IN"
-	case "kansas":
-		return "KS"
-	case "kentucky":
-		return "KY"
-	case "louisiana":
-		return "LA"
-	case "massachusetts":
-		return "MA"
-	case "maryland":
-		return "MD"
-	case "maine":
-		return "ME"
-	case "michigan":
-		return "MI"
-	case "missouri":
-		return "MO"
-	case "mississippi":
-		return "MI"
-	case "montana":
-		return "MT"
-	case "north carolina":
-		return "NC"
-	case "north dakota":
-		return "ND"
-	case "nebraska":
-		return "NE"
-	case "new hampshire":
-		return "NH"
-	case "new jersey":
-		return "NJ"
-	case "new mexico":
-		return "NM"
-	case "nevada":
-		return "NV"
-	case "new york":
-		return "NY"
-	case "ohio":
-		return "OH"
-	case "oklahoma":
-		return "OK"
-	case "oregon":
-		return "OR"
-	case "pennsylvania":
-		return "PA"
-	case "rhode island":
-		return "RI"
-	case "south carolina":
-		return "SC"
-	case "south dakota":
-		return "SD"
-	case "tennessee":
-		return "TN"
-	case "texas":
-		return "TX"
-	case "utah":
-		return "UT"
-	case "virginia":
-		return "VA"
-	case "vermont":
-		return "VT"
-	case "washington":
-		return "WA"
-	case "wisconsin":
-		return "WI"
-	case "west virginia":
-		return "WV"
-	case "wyoming":
-		return "WY"
-	default:
-		return ""
-	}
-	return ""
 }
 
 //
