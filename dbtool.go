@@ -12,7 +12,7 @@ import (
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
-	"github.com/docculi-company/ws/awso"
+	"github.com/docculi-company/awso"
 	"github.com/go-redis/redis"
 	"github.com/lithammer/shortuuid/v3"
 	"golang.org/x/crypto/bcrypt"
