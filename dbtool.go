@@ -492,6 +492,117 @@ func UidsFromResult(res *[]interface{}, idType string) []string {
 
 //
 //
+// ToStateAbbrev
+//
+//
+func ToStateAbbrev(s string) string {
+	switch tl := strings.ToLower(s); tl {
+	case "alabama":
+		return "AL"
+	case "alaska":
+		return "AK"
+	case "arkansas":
+		return "AR"
+	case "arizona":
+		return "AZ"
+	case "california":
+		return "CA"
+	case "colorado":
+		return "CO"
+	case "connecticuit":
+		return "CT"
+	case "delaware":
+		return "DE"
+	case "florida":
+		return "FL"
+	case "georgia":
+		return "GA"
+	case "hawaii":
+		return "HI"
+	case "iowa":
+		return "IA"
+	case "idaho":
+		return "ID"
+	case "illinois":
+		return "IL"
+	case "indiana":
+		return "IN"
+	case "kansas":
+		return "KS"
+	case "kentucky":
+		return "KY"
+	case "louisiana":
+		return "LA"
+	case "massachusetts":
+		return "MA"
+	case "maryland":
+		return "MD"
+	case "maine":
+		return "ME"
+	case "michigan":
+		return "MI"
+	case "missouri":
+		return "MO"
+	case "mississippi":
+		return "MI"
+	case "montana":
+		return "MT"
+	case "north carolina":
+		return "NC"
+	case "north dakota":
+		return "ND"
+	case "nebraska":
+		return "NE"
+	case "new hampshire":
+		return "NH"
+	case "new jersey":
+		return "NJ"
+	case "new mexico":
+		return "NM"
+	case "nevada":
+		return "NV"
+	case "new york":
+		return "NY"
+	case "ohio":
+		return "OH"
+	case "oklahoma":
+		return "OK"
+	case "oregon":
+		return "OR"
+	case "pennsylvania":
+		return "PA"
+	case "rhode island":
+		return "RI"
+	case "south carolina":
+		return "SC"
+	case "south dakota":
+		return "SD"
+	case "tennessee":
+		return "TN"
+	case "texas":
+		return "TX"
+	case "utah":
+		return "UT"
+	case "virginia":
+		return "VA"
+	case "vermont":
+		return "VT"
+	case "washington":
+		return "WA"
+	case "wisconsin":
+		return "WI"
+	case "west virginia":
+		return "WV"
+	case "wyoming":
+		return "WY"
+	default:
+		return ""
+	}
+	return ""
+}
+
+//
+//
 // HtmlTableBegin
 //
 //
