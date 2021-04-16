@@ -72,7 +72,8 @@ func Query(tx *sql.Tx, query string, params []interface{}, cols []string) ([]int
 						rowMap[key] = value.(bool)
 					} else {
 						// string
-						rowMap[key] = gen.Sanitize(fmt.Sprintf("%v", value))
+						s := fmt.Sprintf("%v", value)
+						rowMap[key] = gen.Sanitize(s)
 					}
 					/*rowMap[cols[i]] = *rowBuf[i].(*interface{})
 
