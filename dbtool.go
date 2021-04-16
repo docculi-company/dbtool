@@ -46,8 +46,35 @@ func Query(tx *sql.Tx, query string, params []interface{}, cols []string) ([]int
 			if err != nil {
 				return nil, err
 			} else {
-				for i := range rowBuf {
-					rowMap[cols[i]] = *rowBuf[i].(*interface{})
+				for i, v := range rowBuf {
+					key := cols[i]
+					value := *v.(*interface{})
+
+					if _, ok := value.(map[string]interface{}); ok {
+						// MSI
+						s := fmt.Sprintf("%v", value)
+						rowMap[key], err = gen.DecodeStringToMSI(s)
+						if err != nil {
+							return make([]interface{}, 0, 8), err
+						}
+					} else if _, ok := value.([]interface{}); ok {
+						// Ar
+						s := fmt.Sprintf("%v", value)
+						rowMap[key], err = gen.DecodeStringToAr(s)
+						if err != nil {
+							return make([]interface{}, 0, 8), err
+						}
+					} else if _, ok := value.(int); ok {
+						// int
+						rowMap[key] = value.(int)
+					} else if _, ok := value.(bool); ok {
+						// bool
+						rowMap[key] = value.(bool)
+					} else {
+						// string
+						rowMap[key] = gen.Sanitize(fmt.Sprintf("%v", value))
+					}
+					/*rowMap[cols[i]] = *rowBuf[i].(*interface{})
 
 					s := fmt.Sprintf("%v", rowMap[cols[i]])
 
@@ -65,7 +92,7 @@ func Query(tx *sql.Tx, query string, params []interface{}, cols []string) ([]int
 						}
 					}
 
-					rowMap[cols[i]] = gen.Sanitize(s)
+					rowMap[cols[i]] = gen.Sanitize(s)*/
 				}
 				resRows = append(resRows, rowMap)
 			}
