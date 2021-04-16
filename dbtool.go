@@ -50,30 +50,30 @@ func Query(tx *sql.Tx, query string, params []interface{}, cols []string) ([]int
 					key := cols[i]
 					value := *v.(*interface{})
 
-					if _, ok := value.(map[string]interface{}); ok {
-						// MSI
-						s := fmt.Sprintf("%v", value)
-						rowMap[key], err = gen.DecodeStringToMSI(s)
-						if err != nil {
-							return make([]interface{}, 0, 8), err
-						}
-					} else if _, ok := value.([]interface{}); ok {
-						// Ar
-						s := fmt.Sprintf("%v", value)
-						rowMap[key], err = gen.DecodeStringToAr(s)
-						if err != nil {
-							return make([]interface{}, 0, 8), err
-						}
-					} else if _, ok := value.(int); ok {
+					if _, ok := value.(int); ok {
 						// int
 						rowMap[key] = value.(int)
 					} else if _, ok := value.(bool); ok {
 						// bool
 						rowMap[key] = value.(bool)
 					} else {
-						// string
 						s := fmt.Sprintf("%v", value)
-						rowMap[key] = gen.Sanitize(s)
+						if _, ok := value.(map[string]interface{}); ok {
+							// MSI
+							rowMap[key], err = gen.DecodeStringToMSI(s)
+							if err != nil {
+								return make([]interface{}, 0, 8), err
+							}
+						} else if _, ok := value.([]interface{}); ok {
+							// Ar
+							rowMap[key], err = gen.DecodeStringToAr(s)
+							if err != nil {
+								return make([]interface{}, 0, 8), err
+							}
+						} else {
+							// string
+							rowMap[key] = gen.Sanitize(s)
+						}
 					}
 					/*rowMap[cols[i]] = *rowBuf[i].(*interface{})
 
