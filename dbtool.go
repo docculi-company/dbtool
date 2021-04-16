@@ -61,18 +61,11 @@ func Query(tx *sql.Tx, query string, params []interface{}, cols []string) ([]int
 						// decode and check for MSI or Ar
 						_, err := hex.DecodeString(s)
 						if err == nil {
-							m, err := gen.DecodeStringToMSI(s)
-							if err == nil {
-								rowMap[key] = m
-							} else {
-								a, err2 := gen.DecodeStringToAr(s)
-								if err2 == nil {
-									rowMap[key] = a
-								} else {
-									rowMap[key] = fmt.Sprintf("%v", gen.Sanitize(s))
-									rowMap[key] = s
-								}
+							u, err := gen.DecodeString(s)
+							if err != nil {
+								return make([]interface{}, 0, 8), err
 							}
+							rowMap[key] = u
 						} else {
 							rowMap[key] = fmt.Sprintf("%v", gen.Sanitize(s))
 						}
