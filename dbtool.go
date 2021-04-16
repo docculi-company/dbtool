@@ -69,11 +69,12 @@ func Query(tx *sql.Tx, query string, params []interface{}, cols []string) ([]int
 								if err2 == nil {
 									rowMap[key] = a
 								} else {
-									rowMap[key] = gen.Sanitize(s)
+									rowMap[key] = fmt.Sprintf("%v", gen.Sanitize(s))
+									rowMap[key] = s
 								}
 							}
 						} else {
-							rowMap[key] = gen.Sanitize(s)
+							rowMap[key] = fmt.Sprintf("%v", gen.Sanitize(s))
 						}
 					}
 
