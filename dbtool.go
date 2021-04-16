@@ -65,10 +65,7 @@ func Query(tx *sql.Tx, query string, params []interface{}, cols []string) ([]int
 						}
 					}
 
-					// have to replace % to avoid ! (MISSING)
-					if strings.ContainsAny(s, "%") {
-						rowMap[cols[i]] = strings.ReplaceAll(s, "%", "&percnt;")
-					}
+					rowMap[cols[i]] = gen.Sanitize(s)
 				}
 				resRows = append(resRows, rowMap)
 			}
@@ -183,10 +180,7 @@ func QueryWithFile(awso *awso.Awso, tx *sql.Tx, query string, params []interface
 						}
 					}
 
-					// have to replace % to avoid ! (MISSING)
-					if strings.ContainsAny(s, "%") {
-						rowMap[cols[i]] = strings.ReplaceAll(s, "%", "&percnt;")
-					}
+					rowMap[cols[i]] = gen.Sanitize(s)
 				}
 				resRows = append(resRows, rowMap)
 			}
