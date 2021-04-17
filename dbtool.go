@@ -161,6 +161,7 @@ func QueryWithFile(awso *awso.Awso, tx *sql.Tx, query string, params []interface
 					// signed url creation
 					j, b := contains(fileCols, key)
 					if b && (j > -1) {
+						fmt.Printf("Filename: %v\n\n", rowMap[key])
 						rowMap[key], err = awso.GetSignedUrl(fmt.Sprintf("%v", rowMap[signedUrlIds[j]]), fmt.Sprintf("%v", rowMap[key]))
 						if err != nil {
 							return make([]interface{}, 0, 8), err
@@ -172,23 +173,16 @@ func QueryWithFile(awso *awso.Awso, tx *sql.Tx, query string, params []interface
 						// bool
 						rowMap[key] = value.(bool)
 					} else {
+						// map/array
 						s := fmt.Sprintf("%v", value)
-
 						u, err := gen.DecodeString(s)
 						if err != nil {
+							// string
 							rowMap[key] = gen.GetSanitizedString(s)
 						} else {
 							rowMap[key] = u
 						}
 					}
-
-					/*rowMap[cols[i]] = *rowBuf[i].(*interface{})
-
-					// signed url creation
-					j, b := contains(fileCols, cols[i])
-					if b && (j > -1) {
-						rowMap[cols[i]] = awso.GetSignedUrl(fmt.Sprintf("%v", rowMap[signedUrlIds[j]]), fmt.Sprintf("%v", rowMap[cols[i]]))
-					}*/
 				}
 				resRows = append(resRows, rowMap)
 			}
