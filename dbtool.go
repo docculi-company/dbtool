@@ -199,8 +199,7 @@ func QueryWithFile(awso *awso.Awso, tx *sql.Tx, query string, params []interface
 							}
 						}
 					} else {
-						gen.SanitizeString(&s)
-						rowMap[cols[i]] = s
+						rowMap[cols[i]] = gen.GetSanitizedString(s)
 					}
 				}
 				resRows = append(resRows, rowMap)
