@@ -3,7 +3,6 @@ package dbtool
 import (
 	"crypto/rsa"
 	"database/sql"
-	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -66,26 +65,6 @@ func Query(tx *sql.Tx, query string, params []interface{}, cols []string) ([]int
 							rowMap[key] = u
 						}
 					}
-
-					/*rowMap[cols[i]] = *rowBuf[i].(*interface{})
-
-					s := fmt.Sprintf("%v", rowMap[cols[i]])
-
-					// check for map and decode
-					_, err := hex.DecodeString(s)
-					if err == nil {
-						m, err := gen.DecodeStringToMSI(s)
-						if err == nil {
-							rowMap[cols[i]] = m
-						} else {
-							a, err := gen.DecodeStringToAr(s)
-							if err == nil {
-								rowMap[cols[i]] = a
-							}
-						}
-					}
-
-					rowMap[cols[i]] = gen.Sanitize(s)*/
 				}
 				resRows = append(resRows, rowMap)
 			}
@@ -175,32 +154,38 @@ func QueryWithFile(awso *awso.Awso, tx *sql.Tx, query string, params []interface
 			if err != nil {
 				return nil, err
 			} else {
-				for i := range rowBuf {
-					rowMap[cols[i]] = *rowBuf[i].(*interface{})
+				for i, v := range rowBuf {
+					key := cols[i]
+					value := *v.(*interface{})
+
+					// signed url creation
+					j, b := contains(fileCols, key)
+					if b && (j > -1) {
+						rowMap[key] = awso.GetSignedUrl(fmt.Sprintf("%v", rowMap[signedUrlIds[j]]), fmt.Sprintf("%v", rowMap[key]))
+					} else if _, ok := value.(int); ok {
+						// int
+						rowMap[key] = value.(int)
+					} else if _, ok := value.(bool); ok {
+						// bool
+						rowMap[key] = value.(bool)
+					} else {
+						s := fmt.Sprintf("%v", value)
+
+						u, err := gen.DecodeString(s)
+						if err != nil {
+							rowMap[key] = gen.GetSanitizedString(s)
+						} else {
+							rowMap[key] = u
+						}
+					}
+
+					/*rowMap[cols[i]] = *rowBuf[i].(*interface{})
 
 					// signed url creation
 					j, b := contains(fileCols, cols[i])
 					if b && (j > -1) {
 						rowMap[cols[i]] = awso.GetSignedUrl(fmt.Sprintf("%v", rowMap[signedUrlIds[j]]), fmt.Sprintf("%v", rowMap[cols[i]]))
-					}
-
-					s := fmt.Sprintf("%v", rowMap[cols[i]])
-
-					// check for map and decode
-					_, err := hex.DecodeString(s)
-					if err == nil {
-						m, err := gen.DecodeStringToMSI(s)
-						if err == nil {
-							rowMap[cols[i]] = m
-						} else {
-							a, err := gen.DecodeStringToAr(s)
-							if err == nil {
-								rowMap[cols[i]] = a
-							}
-						}
-					} else {
-						rowMap[cols[i]] = gen.GetSanitizedString(s)
-					}
+					}*/
 				}
 				resRows = append(resRows, rowMap)
 			}
