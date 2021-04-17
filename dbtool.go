@@ -161,7 +161,6 @@ func QueryWithFile(awso *awso.Awso, tx *sql.Tx, query string, params []interface
 					// signed url creation
 					j, b := contains(fileCols, key)
 					if b && (j > -1) {
-						fmt.Printf("Filename: %v\n\n", rowMap[key])
 						rowMap[key], err = awso.GetSignedUrl(fmt.Sprintf("%v", rowMap[signedUrlIds[j]]), fmt.Sprintf("%v", value))
 						if err != nil {
 							return make([]interface{}, 0, 8), err
