@@ -61,8 +61,7 @@ func Query(tx *sql.Tx, query string, params []interface{}, cols []string) ([]int
 
 						u, err := gen.DecodeString(s)
 						if err != nil {
-							gen.SanitizeString(&s)
-							rowMap[key] = s
+							rowMap[key] = gen.GetSanitizedString(s)
 						} else {
 							rowMap[key] = u
 						}
