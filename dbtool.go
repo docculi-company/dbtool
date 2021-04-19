@@ -56,11 +56,16 @@ func Query(tx *sql.Tx, query string, params []interface{}, cols []string) ([]int
 						// bool
 						rowMap[key] = value.(bool)
 					} else {
+						// map/array
 						s := fmt.Sprintf("%v", value)
-
 						u, err := gen.DecodeString(s)
 						if err != nil {
-							rowMap[key] = gen.GetSanitizedString(s)
+							// string
+							if s == "<nil>" {
+								rowMap[key] = ""
+							} else {
+								rowMap[key] = gen.GetSanitizedString(s)
+							}
 						} else {
 							rowMap[key] = u
 						}
@@ -177,7 +182,11 @@ func QueryWithFile(awso *awso.Awso, tx *sql.Tx, query string, params []interface
 						u, err := gen.DecodeString(s)
 						if err != nil {
 							// string
-							rowMap[key] = gen.GetSanitizedString(s)
+							if s == "<nil>" {
+								rowMap[key] = ""
+							} else {
+								rowMap[key] = gen.GetSanitizedString(s)
+							}
 						} else {
 							rowMap[key] = u
 						}
