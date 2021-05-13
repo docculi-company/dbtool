@@ -9,6 +9,7 @@ import (
 	"os"
 	"strings"
 	"time"
+	"unicode"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/docculi-company/awso/v3"
@@ -431,6 +432,23 @@ func UidsFromResult(res *[]interface{}, idType string) []string {
 		}
 	}
 	return uids
+}
+
+//
+//
+// Converts an `attribute` into an `SQL column`
+//
+//
+func ToSqlCol(s string) string {
+	r := ""
+	for _, v := range s {
+		if unicode.IsLower(v) {
+			r += string(v)
+		} else if unicode.IsUpper(v) {
+			r += "_" + strings.ToLower(string(v))
+		}
+	}
+	return r
 }
 
 //
