@@ -481,7 +481,7 @@ func HtmlTrUnsubEnId(email string, emailNoteId string) string {
 				<div style="font-size: 12px; margin-bottom: 16px;">
 					This message was sent to <a href="mailto:` + email + `" style="text-decoration: none;">` + email + `</a>. 
 					If you don't want to receive these emails from Docculi in the future, please 
-					<a href="` + GetOriginDomain() + `/#/unsubscribe/0/` + emailNoteId + `" style="text-decoration: none;">unsubscribe</a>.
+					<a href="` + GetOriginDomain() + `/#/unsubscribe/` + emailNoteId + `" style="text-decoration: none;">unsubscribe</a>.
 				</div>
 				<div style="font-size: 12px;">
 					&copy; 2021 Docculi, LLC., 215 South Denton Tap Road Suite 275, Coppell TX 75019. 
@@ -503,7 +503,7 @@ func HtmlTrUnsubEmail(email string) string {
 				<div style="font-size: 12px; margin-bottom: 16px;">
 					This message was sent to <a href="mailto:` + email + `" style="text-decoration: none;">` + email + `</a>. 
 					If you don't want to receive these emails from Docculi in the future, please 
-					<a href="` + GetOriginDomain() + `/#/unsubscribe/0/` + email + `" style="text-decoration: none;">unsubscribe</a>.
+					<a href="` + GetOriginDomain() + `/#/unsubscribe/` + email + `" style="text-decoration: none;">unsubscribe</a>.
 				</div>
 				<div style="font-size: 12px; margin-bottom: 16px;">
 					This is an advertisement from Docculi, LLC.
