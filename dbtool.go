@@ -254,17 +254,15 @@ func CmpPwd(hashPwd string, pwd string) (bool, error) {
 // Creates a JWT and stores it in the redis cache
 //
 //
-func CreateAndStoreJwt(usrId string /*ip string,*/, signKey *rsa.PrivateKey, redisClient *redis.Client, hour time.Duration) (string, error) {
+func CreateAndStoreJwt(usrId string, signKey *rsa.PrivateKey, redisClient *redis.Client, hour time.Duration) (string, error) {
 	// create JWT key
-	token := jwt.NewWithClaims(jwt.SigningMethodRS256, jwt.MapClaims{"usrId": usrId /*"ip": ip*/})
+	token := jwt.NewWithClaims(jwt.SigningMethodRS256, jwt.MapClaims{"usrId": usrId})
 	tokenString, err := token.SignedString(signKey)
 	if err != nil {
 		return "", err
 	}
-	// create usrId value (ip also?)
 	tokenMap := make(map[string]interface{})
 	tokenMap["usrId"] = usrId
-	//tokenMap["ip"] = ip
 	tData, err := json.Marshal(tokenMap)
 	if err != nil {
 		return "", err
@@ -282,11 +280,10 @@ func CreateAndStoreJwt(usrId string /*ip string,*/, signKey *rsa.PrivateKey, red
 // Creates a JWT and stores it in the redis cache
 //
 //
-func CreateAndStoreShortUuid(usrId string /*ip string,*/, redisClient *redis.Client, hour time.Duration) (string, error) {
+func CreateAndStoreShortUuid(usrId string, redisClient *redis.Client, hour time.Duration) (string, error) {
 	key := shortuuid.New()
 	tokenMap := make(map[string]interface{})
 	tokenMap["usrId"] = usrId
-	//tokenMap["ip"] = ip
 	tData, err := json.Marshal(tokenMap)
 	if err != nil {
 		return "", err
@@ -350,7 +347,7 @@ func GetOriginDomain() string {
 // Check authentication
 //
 //
-func VerifyAuth(rc *redis.Client, authToken string, usrId string /*ip string,*/, topic string, noAuthTopics map[string]bool) error {
+func VerifyAuth(rc *redis.Client, authToken string, usrId string, topic string, noAuthTopics map[string]bool) error {
 	if noAuthTopics[topic] {
 		return nil
 	} else if usrId == "" {
@@ -359,12 +356,8 @@ func VerifyAuth(rc *redis.Client, authToken string, usrId string /*ip string,*/,
 	} else if authToken == "" {
 		err := fmt.Errorf("no authentication token supplied")
 		return err
-		/*else if ip == "" {
-			err := fmt.Errorf("no ip supplied")
-			return err
-		}*/
 	} else {
-		err := VerifyToken(rc, authToken, usrId /*, ip*/)
+		err := VerifyToken(rc, authToken, usrId)
 		if err != nil {
 			return err
 		}
@@ -377,7 +370,7 @@ func VerifyAuth(rc *redis.Client, authToken string, usrId string /*ip string,*/,
 // Verify token with redis store
 //
 //
-func VerifyToken(rc *redis.Client, authToken string, usrId string /*, ip string*/) error {
+func VerifyToken(rc *redis.Client, authToken string, usrId string) error {
 	token, err := rc.Get(authToken).Result()
 	if err == redis.Nil {
 		return err
@@ -390,9 +383,7 @@ func VerifyToken(rc *redis.Client, authToken string, usrId string /*, ip string*
 		return err
 	} else if fmt.Sprintf("%v", tokenMap["usrId"]) != usrId {
 		return fmt.Errorf("auth token usrId '%v' does not match %v", tokenMap["usrId"], usrId)
-	} /*else if fmt.Sprintf("%v", tokenMap["ip"]) != ip {
-		return fmt.Errorf("auth token ip '%v' does not match %v", tokenMap["ip"], ip)
-	}*/
+	}
 	return nil
 }
 
